@@ -1,0 +1,14 @@
+#!/bin/sh
+
+. ../setup_guile_test_env
+
+# 1st argument is absolute path to hand coded guile source directory
+# 2nd argument is absolute path to component C++ shared library build directory
+# 3nd argument is absolute path to component SWIG build directory
+
+add_local_paths \
+    . \
+    /home/lupinox/gnuradio-complete/gr-howto-write-a-block-3.5.1/swig \
+    /home/lupinox/gnuradio-complete/gr-howto-write-a-block-3.5.1/swig
+
+/usr/bin/guile -e main -c '(use-modules (gnuradio test-suite guile-test))' -t .

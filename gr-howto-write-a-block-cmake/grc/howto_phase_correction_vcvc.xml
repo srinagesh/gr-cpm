@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<block>
+	<name>Phase Correction</name>
+	<key>howto_phase_correction_vcvc</key>
+	<category>HOWTO</category>
+	<import>import howto</import>
+	<import>from gnuradio import gr</import>
+	<import>import numpy</import>
+	<make>howto.phase_correction_vcvc($lvec, $constellation_size, $initial_phase, $loop_bw, $max_freq, $min_freq, $cnst)</make>
+	<callback></callback>
+
+	<param>
+		<name>length of input vectors</name>
+		<key>lvec</key>
+		<value>1</value>
+		<type>int</type>
+	</param>
+
+	<param>
+		<name>size of constellation</name>
+		<key>constellation_size</key>
+		<value>2</value>
+		<type>int</type>
+	</param>
+
+	<param>
+		<name>Initial phase</name>
+		<key>initial_phase</key>
+		<value>0</value>
+		<type>float</type>
+	</param>
+
+	<param>
+		<name>PLL Bandwidth(rads)</name>
+		<key>loop_bw</key>
+		<value>0.01</value>
+		<type>float</type>
+	</param>
+
+	<param>
+		<name>Maximum PLL frequency</name>
+		<key>max_freq</key>
+		<value>0.01</value>
+		<type>float</type>
+	</param>
+
+	<param>
+		<name>Minimum PLL frequency</name>
+		<key>min_freq</key>
+		<value>0</value>
+		<type>float</type>
+	</param>
+
+	<param>
+		<name>Constellation Args</name>
+		<key>cnst</key>
+		<type>raw</type>
+	</param>
+
+	<sink>
+		<name>in</name>
+		<type>complex</type>
+		<vlen>$lvec</vlen>
+	</sink>
+
+	<source>
+		<name>out</name>
+		<type>complex</type>
+		<vlen>constellation_size</vlen>
+	</source>
+</block>

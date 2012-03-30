@@ -4,7 +4,7 @@
 	<key>howto_phase_correction_vcvc</key>
 	<category>HOWTO</category>
 	<import>import howto</import>
-	<import>from gnuradio import gr</import>
+	<import>from gnuradio import digital</import>
 	<import>import numpy</import>
 	<make>howto.phase_correction_vcvc($lvec, $constellation_size, $initial_phase, $loop_bw, $max_freq, $min_freq, $cnst)</make>
 	<callback></callback>
@@ -27,28 +27,28 @@
 		<name>Initial phase</name>
 		<key>initial_phase</key>
 		<value>0</value>
-		<type>float</type>
+		<type>real</type>
 	</param>
 
 	<param>
 		<name>PLL Bandwidth(rads)</name>
 		<key>loop_bw</key>
 		<value>0.01</value>
-		<type>float</type>
+		<type>real</type>
 	</param>
 
 	<param>
 		<name>Maximum PLL frequency</name>
 		<key>max_freq</key>
 		<value>0.01</value>
-		<type>float</type>
+		<type>real</type>
 	</param>
 
 	<param>
 		<name>Minimum PLL frequency</name>
 		<key>min_freq</key>
 		<value>0</value>
-		<type>float</type>
+		<type>real</type>
 	</param>
 
 	<param>

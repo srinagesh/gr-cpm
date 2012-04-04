@@ -5,9 +5,8 @@
 	<category>HOWTO</category>
 	<import>import howto</import>
 	<import>from gnuradio import digital</import>
-	<import>import numpy</import>
 	<make>howto.phase_correction_vcvc($lvec, $constellation_size, $initial_phase, $loop_bw, $max_freq, $min_freq, $cnst)</make>
-	<callback></callback>
+	<callback>digital_constellation.base()</callback>
 
 	<param>
 		<name>length of input vectors</name>
@@ -52,7 +51,7 @@
 	</param>
 
 	<param>
-		<name>Constellation Args</name>
+		<name>Constellation Object</name>
 		<key>cnst</key>
 		<type>raw</type>
 	</param>
@@ -65,7 +64,7 @@
 
 	<source>
 		<name>out</name>
-		<type>complex</type>
-		<vlen>constellation_size</vlen>
+		<type>float</type>
+		<vlen>$constellation_size</vlen>
 	</source>
 </block>

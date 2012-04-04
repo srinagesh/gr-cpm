@@ -18,8 +18,7 @@ private:
 friend HOWTO_API howto_phase_correction_vcvc_sptr howto_make_phase_correction_vcvc(unsigned int lvec, unsigned int constellation_size, float initial_phase, float loop_bw, float max_freq, float min_freq,digital_constellation_sptr cnst);
 howto_phase_correction_vcvc(unsigned int lvec, unsigned int constellation_size, float initial_phase, float loop_bw, float max_freq, float min_freq, digital_constellation_sptr cnst);
 digital_constellation_sptr d_cnst;
-float d_phase;
-float d_freq;
+float d_initial_phase;
 unsigned int d_lvec;
 unsigned int d_constellation_size;
 std::vector<gr_complex> d_s;

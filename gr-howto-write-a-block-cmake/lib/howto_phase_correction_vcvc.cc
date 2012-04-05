@@ -58,9 +58,10 @@ int howto_phase_correction_vcvc::work(int noutput_items,
 {
 	const gr_complex *in = (const gr_complex*)input_items[0];
 	float *out = (float*)output_items[0];
-	float t_real,t_imag, sig_distance, error, temp_real, temp_imag, d_phase_parameter;
+	float t_real,t_imag, error, temp_real, temp_imag, d_phase_parameter;
+	float sig_distance[d_constellation_size];
 	unsigned int min_index;
-	gr_complex t_complex, pll_ip, rec_sig_ptr;
+	gr_complex t_complex, pll_ip, *rec_sig_ptr;
 	std::vector<gr_complex> rec_sig, constellation_pt, constellation;
 
 	rec_sig.resize(d_lvec);
@@ -83,16 +84,16 @@ int howto_phase_correction_vcvc::work(int noutput_items,
 		
 	//	cout<<"d_lvec="<<d_lvec<<endl;
 
-		rec_sig_ptr=rec_sig[0];
-		d_cnst->calc_euclidean_metric(&rec_sig_ptr,&sig_distance);
+		rec_sig_ptr=&rec_sig[0];
+		d_cnst->calc_euclidean_metric(rec_sig_ptr,sig_distance);
 		
-	//	cout<<"passed euclidean metric"<<endl;
+	//	cout<<"passed euclidean metric"<< sizeof(sig_distance)<<endl;
 		for(unsigned int i=0;i<d_constellation_size;i++){
-			out[n*d_constellation_size+i]=sig_distance++;
+			out[n*d_constellation_size+i]=sig_distance[i];
 		}
 		
 	//	cout<<"passing through decision maker"<<endl;
-		min_index=d_cnst->decision_maker(&rec_sig_ptr);
+		min_index=d_cnst->decision_maker(rec_sig_ptr);
 		constellation = d_cnst->points();
 	//	cout<<"passed decision maker and points"<<endl;
 		for(unsigned int i=0;i<d_lvec;i++){

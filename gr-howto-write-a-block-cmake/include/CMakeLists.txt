@@ -26,5 +26,6 @@ install(FILES
     howto_square2_ff.h
     howto_demod_filterbank_ccvc.h
     howto_phase_correction_vcvc.h
+    howto_phase_correction_nda_vcvc.h
     DESTINATION include/howto
 )

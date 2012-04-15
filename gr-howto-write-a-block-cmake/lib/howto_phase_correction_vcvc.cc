@@ -1,3 +1,4 @@
+//This program outputs the new constellation after rotation. last changed on 4-8-2012.
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -22,7 +23,7 @@ HOWTO_API howto_phase_correction_vcvc_sptr howto_make_phase_correction_vcvc(unsi
 	return gnuradio::get_initial_sptr(new howto_phase_correction_vcvc(lvec,constellation_size, initial_phase, loop_bw, max_freq, min_freq, cnst));
 }
 
-howto_phase_correction_vcvc::howto_phase_correction_vcvc(unsigned int lvec,  unsigned int constellation_size, float initial_phase, float loop_bw, float max_freq, float min_freq, digital_constellation_sptr cnst):gr_sync_block("phase_correction_vcvc", gr_make_io_signature(1,1,lvec*sizeof(gr_complex)), gr_make_io_signature(1,1,constellation_size*sizeof(float))),gri_control_loop(loop_bw, max_freq, min_freq),d_cnst(cnst)
+howto_phase_correction_vcvc::howto_phase_correction_vcvc(unsigned int lvec,  unsigned int constellation_size, float initial_phase, float loop_bw, float max_freq, float min_freq, digital_constellation_sptr cnst):gr_sync_block("phase_correction_vcvc", gr_make_io_signature(1,1,lvec*sizeof(gr_complex)), gr_make_io_signature(1,1,lvec*sizeof(gr_complex))),gri_control_loop(loop_bw, max_freq, min_freq),d_cnst(cnst)
 {	cout<<"passing through constructor"<<endl;
 	d_initial_phase = initial_phase;
 	d_lvec = lvec;
@@ -57,7 +58,7 @@ int howto_phase_correction_vcvc::work(int noutput_items,
 					gr_vector_void_star &output_items)
 {
 	const gr_complex *in = (const gr_complex*)input_items[0];
-	float *out = (float*)output_items[0];
+	gr_complex *out = (gr_complex*)output_items[0];
 	float t_real,t_imag, error, temp_real, temp_imag, d_phase_parameter;
 	float sig_distance[d_constellation_size];
 	unsigned int min_index;
@@ -85,11 +86,14 @@ int howto_phase_correction_vcvc::work(int noutput_items,
 	//	cout<<"d_lvec="<<d_lvec<<endl;
 
 		rec_sig_ptr=&rec_sig[0];
-		d_cnst->calc_euclidean_metric(rec_sig_ptr,sig_distance);
+	//	d_cnst->calc_euclidean_metric(rec_sig_ptr,sig_distance);
 		
 	//	cout<<"passed euclidean metric"<< sizeof(sig_distance)<<endl;
-		for(unsigned int i=0;i<d_constellation_size;i++){
-			out[n*d_constellation_size+i]=sig_distance[i];
+		for(unsigned int i=0;i<d_lvec;i++){				//change to d_constellation_size when using sig_distance
+	//		out[n*d_constellation_size+i]=sig_distance[i];
+			temp_real=rec_sig[i].real();
+			temp_imag=rec_sig[i].imag();
+			out[n*d_lvec+i]=gr_complex(temp_real,temp_imag);
 		}
 		
 	//	cout<<"passing through decision maker"<<endl;
@@ -122,11 +126,11 @@ int howto_phase_correction_vcvc::work(int noutput_items,
 	//	cout<<"d_freq "<<d_freq<<endl;
 		phase_wrap();
 		frequency_limit();
-	//	d_initial_phase=0;
+		d_initial_phase=0;
 	//	cout<<"end of loop"<<endl;
 	}
 	
-	//cout<<"min_index "<<min_index<<endl;
+	//cout<<d_phase_parameter<<endl;
 		
 return noutput_items;
 }

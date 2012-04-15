@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <block>
-	<name>Phase Correction</name>
-	<key>howto_phase_correction_vcvc</key>
+	<name>Phase Correction NDA</name>
+	<key>howto_phase_correction_nda_vcvc</key>
 	<category>HOWTO</category>
 	<import>import howto</import>
 	<import>from gnuradio import digital</import>
-	<make>howto.phase_correction_vcvc($lvec, $constellation_size, $initial_phase, $loop_bw, $max_freq, $min_freq, $cnst)</make>
-	<callback>digital_constellation.base()</callback>
+	<make>howto.phase_correction_nda_vcvc($lvec, $power, $loop_bw, $max_freq, $min_freq)</make>
+	<callback></callback>
 
 	<param>
 		<name>length of input vectors</name>
@@ -16,17 +16,10 @@
 	</param>
 
 	<param>
-		<name>size of constellation</name>
-		<key>constellation_size</key>
+		<name>Power</name>
+		<key>power</key>
 		<value>2</value>
 		<type>int</type>
-	</param>
-
-	<param>
-		<name>Initial phase</name>
-		<key>initial_phase</key>
-		<value>0</value>
-		<type>real</type>
 	</param>
 
 	<param>
@@ -48,12 +41,6 @@
 		<key>min_freq</key>
 		<value>0</value>
 		<type>real</type>
-	</param>
-
-	<param>
-		<name>Constellation Object</name>
-		<key>cnst</key>
-		<type>raw</type>
 	</param>
 
 	<sink>

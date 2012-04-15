@@ -22,7 +22,7 @@
 ########################################################################
 include(GrPlatform) #define LIB_SUFFIX
 
-add_library(gnuradio-howto SHARED howto_square_ff.cc howto_square2_ff.cc howto_demod_filterbank_ccvc.cc howto_phase_correction_vcvc.cc)
+add_library(gnuradio-howto SHARED howto_square_ff.cc howto_square2_ff.cc howto_demod_filterbank_ccvc.cc howto_phase_correction_vcvc.cc howto_phase_correction_nda_vcvc.cc)
 target_link_libraries(gnuradio-howto ${Boost_LIBRARIES} ${GRUEL_LIBRARIES} ${GNURADIO_CORE_LIBRARIES})
 set_target_properties(gnuradio-howto PROPERTIES DEFINE_SYMBOL "gnuradio_howto_EXPORTS")
 

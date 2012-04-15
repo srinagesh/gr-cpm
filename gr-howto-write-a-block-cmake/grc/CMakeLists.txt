@@ -22,5 +22,6 @@ install(FILES
     howto_square2_ff.xml
     howto_demod_filterbank_ccvc.xml
     howto_phase_correction_vcvc.xml
+    howto_phase_correction_nda_vcvc.xml
     DESTINATION share/gnuradio/grc/blocks
 )

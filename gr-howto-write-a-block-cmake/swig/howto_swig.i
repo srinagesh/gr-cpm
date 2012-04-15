@@ -15,6 +15,7 @@
 #include "howto_square2_ff.h"
 #include "howto_demod_filterbank_ccvc.h"
 #include "howto_phase_correction_vcvc.h"
+#include "howto_phase_correction_nda_vcvc.h"
 %}
 
 GR_SWIG_BLOCK_MAGIC(howto,square_ff);
@@ -28,6 +29,9 @@ GR_SWIG_BLOCK_MAGIC(howto,demod_filterbank_ccvc);
 
 GR_SWIG_BLOCK_MAGIC(howto,phase_correction_vcvc);
 %include "howto_phase_correction_vcvc.h"
+
+GR_SWIG_BLOCK_MAGIC(howto,phase_correction_nda_vcvc);
+%include "howto_phase_correction_nda_vcvc.h"
 
 
 #if SWIGGUILE

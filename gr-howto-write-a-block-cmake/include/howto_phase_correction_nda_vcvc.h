@@ -9,16 +9,17 @@
 
 class howto_phase_correction_nda_vcvc;
 typedef boost::shared_ptr<howto_phase_correction_nda_vcvc> howto_phase_correction_nda_vcvc_sptr;
-HOWTO_API howto_phase_correction_nda_vcvc_sptr howto_make_phase_correction_nda_vcvc (unsigned int lvec, unsigned int power, float loop_bw, float max_freq, float min_freq);
+HOWTO_API howto_phase_correction_nda_vcvc_sptr howto_make_phase_correction_nda_vcvc (unsigned int lvec, unsigned int power, float loop_bw, float max_freq, float min_freq, digital_constellation_sptr cnst);
 
 
 class HOWTO_API howto_phase_correction_nda_vcvc: public gr_sync_block, public gri_control_loop
 {
 private:
-friend HOWTO_API howto_phase_correction_nda_vcvc_sptr howto_make_phase_correction_nda_vcvc(unsigned int lvec, unsigned int power, float loop_bw, float max_freq, float min_freq);
-howto_phase_correction_nda_vcvc(unsigned int lvec, unsigned int power, float loop_bw, float max_freq, float min_freq);
+friend HOWTO_API howto_phase_correction_nda_vcvc_sptr howto_make_phase_correction_nda_vcvc(unsigned int lvec, unsigned int power, float loop_bw, float max_freq, float min_freq,digital_constellation_sptr cnst);
+howto_phase_correction_nda_vcvc(unsigned int lvec, unsigned int power, float loop_bw, float max_freq, float min_freq,digital_constellation_sptr cnst);
 unsigned int d_power;
 unsigned int d_lvec;
+digital_constellation_sptr d_cnst;
 public:
 virtual float phase_detector(gr_complex sample, float ref_phase);
 virtual float mod_2pi(float in_ph);

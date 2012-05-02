@@ -25,8 +25,23 @@ HOWTO_API howto_phase_correction_nda_vcvc_sptr howto_make_phase_correction_nda_v
 
 howto_phase_correction_nda_vcvc::howto_phase_correction_nda_vcvc(unsigned int lvec, unsigned int power, float loop_bw, float max_freq, float min_freq,digital_constellation_sptr cnst):gr_sync_block("phase_correction_nda_vcvc", gr_make_io_signature(1,1,lvec*sizeof(gr_complex)), gr_make_io_signature(1,1,lvec*sizeof(gr_complex))),gri_control_loop(loop_bw, max_freq, min_freq),d_cnst(cnst)
 {	cout<<"passing through constructor"<<endl;
+	float temp_real,temp_imag;
 	d_power = power;
 	d_lvec = lvec;
+	z.resize(d_lvec);
+
+	constellation = d_cnst->points();
+	for(unsigned int i=0;i<d_power;i++){
+		for(unsigned int j=0;j<d_lvec;j++){
+			if(i==0)
+			z[j]=gr_complex(1,0);
+
+			temp_real=constellation[j].real() * z[j].real() - constellation[j].imag() * z[j].imag();
+			temp_imag=constellation[j].real() * z[j].imag() + constellation[j].imag() * z[j].real();
+			z[j]=gr_complex(temp_real,temp_imag);
+		}
+	}
+//	cout<<"c_real "<<z[0].real()<<" c_imag "<<z[0].imag()<<endl;
 	cout<<"this program has passed through the pc constructor"<<endl;
 }
 
@@ -49,6 +64,7 @@ float howto_phase_correction_nda_vcvc::phase_detector(gr_complex sample, float r
 {
 	float sample_phase;
 	sample_phase = gr_fast_atan2f(sample.imag(),sample.real());
+//	cout<<sample_phase<<endl;
 	return mod_2pi(sample_phase-ref_phase);
 }
 
@@ -60,10 +76,9 @@ int howto_phase_correction_nda_vcvc::work(int noutput_items,
 	gr_complex *out = (gr_complex*)output_items[0];
 	float t_real,t_imag, error, temp_real, temp_imag, d_phase_parameter;
 	gr_complex t_complex, pll_ip, rec_sig_sum;
-	std::vector<gr_complex> rec_sig, z,constellation;
+	std::vector<gr_complex> rec_sig;
 
 	rec_sig.resize(d_lvec);
-	z.resize(d_lvec);
 
 	for(unsigned int n=0;n<noutput_items;n++){
 	//	cout<<"first line"<<endl;
@@ -79,29 +94,17 @@ int howto_phase_correction_nda_vcvc::work(int noutput_items,
 				rec_sig[j]=gr_complex(temp_real,temp_imag);
 			}
 		}
-//-----------------------------------------------------------------------
-		constellation = d_cnst->points();
-		for(unsigned int i=0;i<d_power;i++){
-			for(unsigned int j=0;j<d_lvec;j++){
-				if(i==0)
-				z[j]=gr_complex(1,0);
-
-				temp_real=constellation[j].real() * z[j].real() - constellation[j].imag() * z[j].imag();
-				temp_imag=constellation[j].real() * z[j].imag() + constellation[j].imag() * z[j].real();
-				z[j]=gr_complex(temp_real,temp_imag);
-			}
-		}
-
-		
-		
+//		cout<<"c_real "<<rec_sig[0].real()<<" c_imag "<<rec_sig[0].imag()<<endl;
+//-----------------------------------------------------------------------	
+		rec_sig_sum=gr_complex(0,0);
 		for(unsigned int i=0;i<d_lvec;i++){				//!!NOTE:change this back to d_lvec
-			temp_real=(rec_sig[i].real() * z[i].real() + rec_sig[i].imag() * z[i].imag())/(pow(z[i].real(),2)+pow(z[i].imag(),2));
-			temp_imag=(-rec_sig[i].real() * z[i].imag() + rec_sig[i].imag() * z[i].real())/(pow(z[i].real(),2)+pow(z[i].imag(),2));
+			temp_real=(rec_sig[i].real() * z[i].real() + rec_sig[i].imag() * z[i].imag());
+			temp_imag=(-rec_sig[i].real() * z[i].imag() + rec_sig[i].imag() * z[i].real());
 			temp_real=rec_sig_sum.real()+temp_real;
 			temp_imag=rec_sig_sum.imag()+temp_imag;
 			rec_sig_sum=gr_complex(temp_real,temp_imag);
 		}
-		
+	//	cout<<"c_real "<<rec_sig_sum.real()<<" c_imag "<<rec_sig_sum.imag()<<endl;	
 	
 		//rec_sig_sum is the input to the phase locked loop.
 
@@ -129,7 +132,7 @@ int howto_phase_correction_nda_vcvc::work(int noutput_items,
 	//	cout<<"end of loop"<<endl;
 	}
 	
-	cout<<error<<endl;
+	//cout<<error<<endl;
 		
 return noutput_items;
 }

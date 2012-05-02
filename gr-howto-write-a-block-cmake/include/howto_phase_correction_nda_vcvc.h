@@ -20,6 +20,8 @@ howto_phase_correction_nda_vcvc(unsigned int lvec, unsigned int power, float loo
 unsigned int d_power;
 unsigned int d_lvec;
 digital_constellation_sptr d_cnst;
+std::vector<gr_complex> z;
+std::vector<gr_complex> constellation;
 public:
 virtual float phase_detector(gr_complex sample, float ref_phase);
 virtual float mod_2pi(float in_ph);

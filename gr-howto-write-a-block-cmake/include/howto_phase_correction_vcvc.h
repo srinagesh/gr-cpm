@@ -22,6 +22,7 @@ float d_initial_phase;
 unsigned int d_lvec;
 unsigned int d_constellation_size;
 std::vector<gr_complex> d_s;
+bool first_loop;
 public:
 virtual float phase_detector(gr_complex sample, float ref_phase);
 virtual float mod_2pi(float in_ph);

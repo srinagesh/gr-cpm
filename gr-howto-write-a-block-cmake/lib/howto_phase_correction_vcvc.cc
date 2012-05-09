@@ -28,6 +28,7 @@ howto_phase_correction_vcvc::howto_phase_correction_vcvc(unsigned int lvec,  uns
 	d_initial_phase = initial_phase;
 	d_lvec = lvec;
 	d_constellation_size=constellation_size;
+	first_loop=1;
 	cout<<"this program has passed through the pc constructor"<<endl;
 }
 
@@ -71,9 +72,15 @@ int howto_phase_correction_vcvc::work(int noutput_items,
 
 	for(unsigned int n=0;n<noutput_items;n++){
 	//	cout<<"first line"<<endl;
-		d_phase_parameter=d_initial_phase+d_phase;
+	//	d_phase_parameter=d_initial_phase+d_phase;
+		if (first_loop==1) d_phase_parameter=d_initial_phase;
+		else d_phase_parameter=d_phase;
+		
+		if (n>10) first_loop=0;
+
 		gr_sincosf(d_phase_parameter,&t_imag,&t_real);
 		t_complex = gr_complex(t_real,-t_imag);
+	//	cout<<"t_real "<<t_real<<"t_complex "<<t_complex<<endl;
 	//	cout<<"second line"<<endl;
 
 		for(unsigned int i=0;i<d_lvec;i++){
@@ -81,7 +88,9 @@ int howto_phase_correction_vcvc::work(int noutput_items,
 			temp_real=in[n*d_lvec+i].real() * t_complex.real() - in[n*d_lvec+i].imag() * t_complex.imag();
 			temp_imag=in[n*d_lvec+i].real() * t_complex.imag() + in[n*d_lvec+i].imag() * t_complex.real();
 			rec_sig[i]=gr_complex(temp_real,temp_imag);
+	//		cout<<rec_sig[i]<<endl;
 		}
+	//	cout<<in[n*d_lvec]<<endl;
 		
 	//	cout<<"d_lvec="<<d_lvec<<endl;
 
@@ -106,6 +115,8 @@ int howto_phase_correction_vcvc::work(int noutput_items,
 	//		cout<<"real "<<temp_real<<" imag "<<temp_imag<<endl;
 			constellation_pt[i]=gr_complex(temp_real,temp_imag);
 		}
+		
+	//	cout<<"cnstpt "<<constellation_pt[0]<<endl;
 	//	cout<<"passed loop"<<endl;
 		
 		pll_ip=gr_complex(0.0,0.0);
@@ -117,16 +128,16 @@ int howto_phase_correction_vcvc::work(int noutput_items,
 			pll_ip=gr_complex(temp_real,temp_imag);
 
 		}
-
+	//	cout<<in[n*d_lvec]<<endl;
+	//	cout<<"pll_real "<<pll_ip.real()<<"pll_imag "<<pll_ip.imag()<<endl;
 	//	cout<<"passed phase correction"<<endl;
 		
 		error = phase_detector(pll_ip,d_phase);
 		advance_loop(error);
-	//	cout<<"d_phase "<<d_phase<<endl;
+	//	cout<<"d_phase "<<d_phase_parameter<<endl;
 	//	cout<<"d_freq "<<d_freq<<endl;
 		phase_wrap();
 		frequency_limit();
-		d_initial_phase=0;
 	//	cout<<"end of loop"<<endl;
 	}
 	

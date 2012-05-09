@@ -38,7 +38,7 @@ howto_phase_correction_nda_vcvc::howto_phase_correction_nda_vcvc(unsigned int lv
 
 			temp_real=constellation[j].real() * z[j].real() - constellation[j].imag() * z[j].imag();
 			temp_imag=constellation[j].real() * z[j].imag() + constellation[j].imag() * z[j].real();
-			z[j]=gr_complex(temp_real,temp_imag);
+			z[j]=gr_complex(temp_real,0);
 		}
 	}
 //	cout<<"c_real "<<z[0].real()<<" c_imag "<<z[0].imag()<<endl;
@@ -98,8 +98,8 @@ int howto_phase_correction_nda_vcvc::work(int noutput_items,
 //-----------------------------------------------------------------------	
 		rec_sig_sum=gr_complex(0,0);
 		for(unsigned int i=0;i<d_lvec;i++){				//!!NOTE:change this back to d_lvec
-			temp_real=(rec_sig[i].real() * z[i].real() + rec_sig[i].imag() * z[i].imag());
-			temp_imag=(-rec_sig[i].real() * z[i].imag() + rec_sig[i].imag() * z[i].real());
+			temp_real=(rec_sig[i].real() * z[i].real() + rec_sig[i].imag() * z[i].imag())/pow(z[i].real(),2);
+			temp_imag=(-rec_sig[i].real() * z[i].imag() + rec_sig[i].imag() * z[i].real())/pow(z[i].real(),2);
 			temp_real=rec_sig_sum.real()+temp_real;
 			temp_imag=rec_sig_sum.imag()+temp_imag;
 			rec_sig_sum=gr_complex(temp_real,temp_imag);

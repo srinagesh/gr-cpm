@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='ASCII'?>
 <flow_graph>
-  <timestamp>Mon Apr 16 16:07:09 2012</timestamp>
+  <timestamp>Tue May 15 20:34:21 2012</timestamp>
   <block>
     <key>options</key>
     <param>
@@ -1200,45 +1200,6 @@
     </param>
   </block>
   <block>
-    <key>howto_phase_correction_nda_vcvc</key>
-    <param>
-      <key>id</key>
-      <value>howto_phase_correction_nda_vcvc_0</value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>lvec</key>
-      <value>2</value>
-    </param>
-    <param>
-      <key>power</key>
-      <value>4</value>
-    </param>
-    <param>
-      <key>loop_bw</key>
-      <value>0.001</value>
-    </param>
-    <param>
-      <key>max_freq</key>
-      <value>0.001</value>
-    </param>
-    <param>
-      <key>min_freq</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(282, 600)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-  </block>
-  <block>
     <key>gr_streams_to_vector</key>
     <param>
       <key>id</key>
@@ -1703,6 +1664,49 @@
     <param>
       <key>_coordinate</key>
       <value>(56, 514)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+  </block>
+  <block>
+    <key>howto_phase_correction_nda_vcvc</key>
+    <param>
+      <key>id</key>
+      <value>howto_phase_correction_nda_vcvc_0</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>lvec</key>
+      <value>2</value>
+    </param>
+    <param>
+      <key>power</key>
+      <value>4</value>
+    </param>
+    <param>
+      <key>loop_bw</key>
+      <value>0.0005</value>
+    </param>
+    <param>
+      <key>max_freq</key>
+      <value>0.01</value>
+    </param>
+    <param>
+      <key>min_freq</key>
+      <value>-0.01</value>
+    </param>
+    <param>
+      <key>cnst</key>
+      <value>digital.constellation_calcdist((complex(1.51194,-1.01025),complex(-0.462639,-0.692389),complex(-1.51194,1.01025),complex(0.462639,0.692389),complex(1.51194,1.01025),complex(-0.462639,0.692389),complex(-1.51194,-1.01025),complex(0.462639,-0.692389)),[],1,2).base()</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(282, 600)</value>
     </param>
     <param>
       <key>_rotation</key>

@@ -26,20 +26,22 @@ HOWTO_API howto_phase_correction_nda_vcvc_sptr howto_make_phase_correction_nda_v
 howto_phase_correction_nda_vcvc::howto_phase_correction_nda_vcvc(unsigned int lvec, unsigned int power, float loop_bw, float max_freq, float min_freq,digital_constellation_sptr cnst):gr_sync_block("phase_correction_nda_vcvc", gr_make_io_signature(1,1,lvec*sizeof(gr_complex)), gr_make_io_signature(1,1,lvec*sizeof(gr_complex))),gri_control_loop(loop_bw, max_freq, min_freq),d_cnst(cnst)
 {	cout<<"passing through constructor"<<endl;
 	float temp_real,temp_imag;
+	std::vector<gr_complex> y;
 	d_power = power;
 	d_lvec = lvec;
 	z.resize(d_lvec);
+	y.resize(d_lvec);
 
 	constellation = d_cnst->points();
-	for(unsigned int i=0;i<d_power;i++){
-		for(unsigned int j=0;j<d_lvec;j++){
-			if(i==0)
-			z[j]=gr_complex(1,0);
-
-			temp_real=constellation[j].real() * z[j].real() - constellation[j].imag() * z[j].imag();
-			temp_imag=constellation[j].real() * z[j].imag() + constellation[j].imag() * z[j].real();
-			z[j]=gr_complex(temp_real,0);
+	for(unsigned int j=0;j<d_lvec;j++){
+		y[j]=gr_complex(1,0);
+		for(unsigned int i=0;i<d_power;i++){
+			temp_real=constellation[j].real() * y[j].real() - constellation[j].imag() * y[j].imag();
+			temp_imag=constellation[j].real() * y[j].imag() + constellation[j].imag() * y[j].real();
+			y[j]=gr_complex(temp_real,temp_imag);
 		}
+		z[j]=gr_complex(y[j].real(),0);
+		cout<<"Z is "<<z[j]<<endl;
 	}
 //	cout<<"c_real "<<z[0].real()<<" c_imag "<<z[0].imag()<<endl;
 	cout<<"this program has passed through the pc constructor"<<endl;
@@ -64,7 +66,7 @@ float howto_phase_correction_nda_vcvc::phase_detector(gr_complex sample, float r
 {
 	float sample_phase;
 	sample_phase = gr_fast_atan2f(sample.imag(),sample.real());
-//	cout<<sample_phase<<endl;
+	//cout<<sample_phase*180/M_PI<<endl;
 	return mod_2pi(sample_phase-ref_phase);
 }
 
@@ -131,7 +133,6 @@ int howto_phase_correction_nda_vcvc::work(int noutput_items,
 		frequency_limit();
 	//	cout<<"end of loop"<<endl;
 	}
-	
 	//cout<<error<<endl;
 		
 return noutput_items;

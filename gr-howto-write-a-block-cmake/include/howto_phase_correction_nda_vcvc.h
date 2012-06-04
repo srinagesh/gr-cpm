@@ -23,7 +23,6 @@ digital_constellation_sptr d_cnst;
 std::vector<gr_complex> z;
 std::vector<gr_complex> constellation;
 public:
-virtual float phase_detector(gr_complex sample, gr_complex ref);
 int work(int noutput_items,
 	gr_vector_const_void_star &input_items,
 	gr_vector_void_star &output_items);

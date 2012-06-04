@@ -26,12 +26,12 @@ HOWTO_API howto_phase_correction_nda_vcvc_sptr howto_make_phase_correction_nda_v
 
 
 /*-------------------------------------------------------------------------------
-*		CONSTRUCTOR
+*			CONSTRUCTOR
 *------------------------------------------------------------------------------*/
 
 howto_phase_correction_nda_vcvc::howto_phase_correction_nda_vcvc(unsigned int lvec, unsigned int power, float loop_bw, float max_freq, float min_freq,digital_constellation_sptr cnst):gr_sync_block("phase_correction_nda_vcvc", gr_make_io_signature(1,1,lvec*sizeof(gr_complex)), gr_make_io_signature(1,1,lvec*sizeof(gr_complex))),gri_control_loop(loop_bw, max_freq, min_freq),d_cnst(cnst)
 {	cout<<"passing through constructor"<<endl;
-	float tmag, treal, timag, tpower, temp_real, temp_imag;
+	float tmag, treal, timag;
 	int num_points;
 	std::vector<gr_complex> y;
 	d_power = power;
@@ -44,10 +44,8 @@ howto_phase_correction_nda_vcvc::howto_phase_correction_nda_vcvc(unsigned int lv
 	for(unsigned int j=0;j<d_lvec;j++){
 		z[j] = gr_complex(0,0);
 		for(unsigned int i = 0; i<num_points;i++){
-			tmag = sqrt(pow(constellation[i*d_lvec+j].real(),2)+pow(constellation[i*d_lvec+j].imag(),2));
-			gr_sincosf(d_power*gr_fast_atan2f(constellation[i*d_lvec+j]), &timag, &treal);
-			tpower = pow(tmag,d_power);
-			y[i] = gr_complex(tpower*treal, tpower*timag);
+			tmag = abs(constellation[i*d_lvec+j]);
+			y[i] = polar(float(pow(tmag,d_power)), float(arg(constellation[i*d_lvec+j])*d_power));
 			z[j] +=y[i];
 		}
 		z[j]=gr_complex(z[j].real()/num_points, z[j].imag()/num_points);
@@ -57,13 +55,9 @@ howto_phase_correction_nda_vcvc::howto_phase_correction_nda_vcvc(unsigned int lv
 }
 
 
-float howto_phase_correction_nda_vcvc::phase_detector(gr_complex sample, gr_complex ref)
-{
-	float phase_diff;
-	phase_diff = sample.real()*ref.imag() + sample.imag()*ref.real();
-	return phase_diff;
-}
-
+//----------------------------------------------------------------------------
+//			WORK FUNCTION
+//----------------------------------------------------------------------------
 int howto_phase_correction_nda_vcvc::work(int noutput_items,
 					gr_vector_const_void_star &input_items,
 					gr_vector_void_star &output_items)
@@ -80,9 +74,8 @@ int howto_phase_correction_nda_vcvc::work(int noutput_items,
 
 //raise input signal to the nth power------------------------------------
 		for(unsigned int j=0;j<d_lvec;j++){
-			temp_mag = sqrt(pow(in[n*d_lvec+j].real(),2)+pow(in[n*d_lvec+j].imag(),2));
-			gr_sincosf(d_power*gr_fast_atan2f(in[n*d_lvec+j]), &temp_imag, &temp_real);
-			rec_sig[j] = gr_complex(pow(temp_mag,d_power)*temp_real, pow(temp_mag,d_power)*temp_imag);
+			temp_mag = abs(in[n*d_lvec+j]);
+			rec_sig[j] = polar(float(pow(temp_mag,d_power)), float(arg(in[n*d_lvec+j])*d_power));
 		}
 
 //-----------------------------------------------------------------------
@@ -104,13 +97,11 @@ int howto_phase_correction_nda_vcvc::work(int noutput_items,
 		t_complex = gr_complex(t_real,-t_imag);
 
 		for(unsigned int i=0;i<d_lvec;i++){
-			temp_real=in[n*d_lvec+i].real() * t_complex.real() - in[n*d_lvec+i].imag() * t_complex.imag();
-			temp_imag=in[n*d_lvec+i].real() * t_complex.imag() + in[n*d_lvec+i].imag() * t_complex.real();
-			out[n*d_lvec+i]=gr_complex(temp_real,temp_imag);
+			out[n*d_lvec+i] = in[n*d_lvec+i]*t_complex;
 		}
-		
+
 		refph = gr_expj(-d_phase);
-		error = phase_detector(rec_sig_sum, refph);
+		error = rec_sig_sum.real()*refph.imag()+rec_sig_sum.imag()*refph.real();
 		advance_loop(error);
 		phase_wrap();
 		frequency_limit();

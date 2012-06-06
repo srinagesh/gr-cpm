@@ -17,11 +17,23 @@
 #include <math.h>
 #include <gr_math.h>
 #include <digital_constellation.h>
+#include <gr_cpm.h>
+#include <gsl/gsl_matrix.h>
+#include "cpmdecomposition.cpp"
+#include "orthogonalize.cpp"
 using namespace std;
 
 HOWTO_API howto_phase_correction_nda_vcvc_sptr howto_make_phase_correction_nda_vcvc(unsigned int lvec, unsigned int power, float loop_bw, float max_freq, float min_freq, digital_constellation_sptr cnst)
 {
 	return gnuradio::get_initial_sptr(new howto_phase_correction_nda_vcvc(lvec, power, loop_bw, max_freq, min_freq,cnst));
+}
+
+//---------------------------------------------------------------------------
+//		SHARED POINTER USING GR_CPM
+//---------------------------------------------------------------------------
+HOWTO_API howto_phase_correction_nda_vcvc_sptr howto_make_phase_correction_nda_vcvc(unsigned int lvec, unsigned int power, float loop_bw, float max_freq, float min_freq, unsigned int M, unsigned int L, unsigned int K, unsigned int P, unsigned int Q, int pulsetype, double beta)
+{
+	return gnuradio::get_initial_sptr(new howto_phase_correction_nda_vcvc(lvec, power, loop_bw, max_freq, min_freq, M, L, K, P, Q, (gr_cpm::cpm_type)pulsetype, beta));
 }
 
 
@@ -52,6 +64,70 @@ howto_phase_correction_nda_vcvc::howto_phase_correction_nda_vcvc(unsigned int lv
 		cout<<"Z is "<<z[j]<<endl;
 	}
 	cout<<"this program has passed through the pc constructor"<<endl;
+}
+
+//----------------------------------------------------------------------------
+//		CONSTRUCTOR WITH GR_CPM
+//----------------------------------------------------------------------------
+howto_phase_correction_nda_vcvc::howto_phase_correction_nda_vcvc(unsigned int lvec, unsigned int power, float loop_bw, float max_freq, float min_freq, unsigned int M, unsigned int L, unsigned int K, unsigned int P, unsigned int Q, gr_cpm::cpm_type pulsetype, double beta):gr_sync_block("phase_correction_nda_vcvc", gr_make_io_signature(1,1,lvec*sizeof(gr_complex)), gr_make_io_signature(1,1,lvec*sizeof(gr_complex))),gri_control_loop(loop_bw, max_freq, min_freq)
+{
+	float tmag, treal, timag;
+	int num_points;
+	std::vector<gr_complex> y;
+	std::vector<float> d_g, d_q;
+	gsl_vector* q;
+	gsl_matrix_complex *Sx, *F, *S_f;
+	int Ml, t, nvec;
+	double freq, E;
+
+
+	d_power = power;
+	d_lvec = lvec;
+	z.resize(d_lvec);
+	
+	Ml = (int)floor(pow(M,L)*P+0.5);
+	d_q.resize(Q*L);
+	q = gsl_vector_alloc(Q*L);
+	Sx = gsl_matrix_complex_alloc(Q,Ml);
+	constellation.resize(Ml*lvec);
+	y.resize(Ml);
+	
+	d_g = gr_cpm::phase_response(pulsetype, Q, L, beta);
+	d_q[0] = 0;
+	gsl_vector_set(q,0,d_q[0]);
+	for(unsigned int i=1;i<Q*L;i++){
+		d_q[i] = (d_q[i-1]+d_g[i]);
+		gsl_vector_set(q,i,d_q[i]/2);
+		cout << "q of "<<i<<" is "<<d_q[i]/2<<endl;
+	}
+	
+	t = cpmdecomposition(q,Q,L,M,K,P,Sx,freq);
+
+	cout<<"the operating frequency is fo= "<<freq<<endl;
+
+	t = orthogonalize(Sx,Q,Ml,1,F, E, nvec, S_f);
+
+	num_points = Ml;
+	
+	for(unsigned int j=0;j<Ml;j++){
+		for(unsigned int i=0;i<d_lvec;i++){
+			treal = GSL_REAL(gsl_matrix_complex_get(S_f,i,j));
+			timag = GSL_IMAG(gsl_matrix_complex_get(S_f,i,j));
+			constellation[j*d_lvec+i] = gr_complex(treal, timag);
+		}
+	} 
+	
+	for(unsigned int j=0;j<d_lvec;j++){
+		z[j] = gr_complex(0,0);
+		for(unsigned int i = 0; i<num_points;i++){
+			tmag = abs(constellation[i*d_lvec+j]);
+			y[i] = polar(float(pow(tmag,d_power)), float(arg(constellation[i*d_lvec+j])*d_power));
+			z[j] +=y[i];
+		}
+		z[j]=gr_complex(z[j].real()/num_points, z[j].imag()/num_points);
+		cout<<"Z is "<<z[j]<<endl;
+	}
+	cout<<"this program has passed through the gr_cpm constructor"<<endl;
 }
 
 

@@ -4,13 +4,18 @@
 
 #include <gr_core_api.h>
 #include <howto_api.h>
+#include <gr_cpm.h>
 #include <gr_sync_block.h>
 #include <gri_fir_filter_with_buffer_ccc.h>
 
 class howto_demod_filterbank_ccvc;
 typedef boost::shared_ptr<howto_demod_filterbank_ccvc> howto_demod_filterbank_ccvc_sptr;
+
+//enum howto_demod_filterbank_ccvc::cpm_type;
+
 HOWTO_API howto_demod_filterbank_ccvc_sptr howto_make_demod_filterbank_ccvc (unsigned int numvec, unsigned int taps_per_filter, const std::vector<gr_complex> vtaps);
 HOWTO_API howto_demod_filterbank_ccvc_sptr howto_make_demod_filterbank_ccvc (unsigned int numvec, const char *name);
+HOWTO_API howto_demod_filterbank_ccvc_sptr howto_make_demod_filterbank_ccvc (unsigned int numvec, unsigned int M, unsigned int L, unsigned int K, unsigned int P, unsigned int Q, int pulsetype, double beta);
 
 class gr_fir_ccc;
 
@@ -19,8 +24,11 @@ class HOWTO_API howto_demod_filterbank_ccvc: public gr_sync_block
 private:
 friend HOWTO_API howto_demod_filterbank_ccvc_sptr howto_make_demod_filterbank_ccvc (unsigned int numvec, unsigned int taps_per_filter,const std::vector<gr_complex> vtaps);
 friend HOWTO_API howto_demod_filterbank_ccvc_sptr howto_make_demod_filterbank_ccvc (unsigned int numvec, const char *name);
+friend HOWTO_API howto_demod_filterbank_ccvc_sptr howto_make_demod_filterbank_ccvc (unsigned int numvec, unsigned int M, unsigned int L, unsigned int K, unsigned int P, unsigned int Q, int pulsetype, double beta);
+
 howto_demod_filterbank_ccvc(unsigned int numvec, unsigned int taps_per_filter,const std::vector<gr_complex> vtaps);
 howto_demod_filterbank_ccvc(unsigned int numvec, const char *name);
+howto_demod_filterbank_ccvc(unsigned int numvec, unsigned int M, unsigned int L, unsigned int K, unsigned int P, unsigned int Q, gr_cpm::cpm_type pulsetype, double beta);
 
 std::vector<gri_fir_filter_with_buffer_ccc*> d_vfilters;
 std::vector<std::vector <gr_complex> > d_vtaps;

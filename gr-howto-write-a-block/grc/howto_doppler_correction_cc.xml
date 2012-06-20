@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<block>
+	<name>Doppler Correction</name>
+	<key>howto_doppler_correction_cc</key>
+	<category>HOWTO</category>
+	<import>import howto</import>
+	<import>from gnuradio import gr</import>
+	<import>import numpy</import>
+	<make>howto.doppler_correction_cc($sampling_freq, $port, $int_freq, $rxfreq)</make>
+	<callback></callback>
+
+	<param>
+		<name>Sampling Frequency</name>
+		<key>sampling_freq</key>
+		<type>real</type>
+	</param>
+
+	<param>
+		<name>Port</name>
+		<key>port</key>
+		<value>10000</value>
+		<type>int</type>
+	</param>
+
+	<param>
+		<name>Intermediate Frequency</name>
+		<key>int_freq</key>
+		<value>0</value>
+		<type>real</type>
+	</param>
+
+	<param>
+		<name>Receiver Frequency</name>
+		<key>rxfreq</key>
+		<value>437485000</value>
+		<type>int</type>
+	</param>
+
+	<sink>
+		<name>in</name>
+		<type>complex</type>
+	</sink>
+
+	<source>
+		<name>out</name>
+		<type>complex</type>
+	</source>
+</block>	

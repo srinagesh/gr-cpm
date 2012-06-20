@@ -1,0 +1,4 @@
+DEMODULATION FILTERBANK, DOPPLER CORRECTION AND NON DECISION AIDED PHASE CORRECTION BLOCKS for GNU RADIO
+
+for gnu radio version 3.5 onwards use gr-howto-write-a-block-cmake
+for gnu radio version 3.6 onwards use gr-howto-write-a-block

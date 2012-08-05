@@ -2,5 +2,3 @@ DEMODULATION FILTERBANK, DOPPLER CORRECTION AND NON DECISION AIDED PHASE CORRECT
 
 for gnu radio version 3.5 onwards use gr-howto-write-a-block-cmake
 for gnu radio version 3.6 onwards use gr-howto-write-a-block
-
-This is a test to find out whether the new mac upload actually works

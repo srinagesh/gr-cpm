@@ -1,0 +1,15 @@
+M=2;
+L=1;
+P=2;
+Ml=(M^L)*P;
+for i=1:Ml
+        v_n=mod(i-1,P);
+        d=floor(i-1/P
+        sum=0;
+        for k=0:L-1
+            pwr=M^(L-k);
+            u(k+1)=floor((i-1-sum)/pwr);
+            sum=sum+pwr*u(k+1);
+        end
+        vec=[u,v_n]
+end

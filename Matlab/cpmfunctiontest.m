@@ -1,0 +1,11 @@
+load x;
+L=2;
+T=1;
+Q=10;
+q_n=(0:0.1:1.9)/4;
+M=2;
+K=1;
+P=2;
+bitstr=(x(1:200)>0);
+[wave,Sx]=cpmmod(bitstr,q_n,Q,L,M,K,P);
+plot(real(wave));

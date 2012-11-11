@@ -1,4 +1,18 @@
 DEMODULATION FILTERBANK, DOPPLER CORRECTION AND NON DECISION AIDED PHASE CORRECTION BLOCKS for GNU RADIO
+Work done by Srinagesh Sharma, May 2012
+srinag@umich.edu
 
-for gnu radio version 3.5 onwards use gr-howto-write-a-block-cmake
+for gnu radio version 3.5 onwards use gr-howto-write-a-block-3.5.1
 for gnu radio version 3.6 onwards use gr-howto-write-a-block
+
+I have incorporated the filterbank block and the Non Decision Aided Phase Correction block in the gr_digital folder. Replace your gnu radio gr_digital with this and install. Works for Gnuradio versions 3.6.1 and above.
+
+Please read write up on cpm by Prof. Achilleas Anastasopoulos for the Rimoldi Decomposition implementation.
+The Matlab implementation of the Rimoldi Decomposition is in the Matlab folder. The main program is cpmdecomposition.m
+
+The Non-Decision Aided Phase correction block performs phase correction by nulling out the modulation on raising the nth power and then phase locks to it.
+Please read the comments in the .cc file of the block for more details.
+
+The doppler correction block takes the doppler correction from a TCP port. It is used for real time Intermediate frequency correction. It interfaces with predict or gpredict.
+
+These blocks can be used for optimal decoding of CPM signals. I have tested these by decoding GMSK beacons from the RAX satellite.

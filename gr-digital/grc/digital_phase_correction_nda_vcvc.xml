@@ -3,7 +3,6 @@
 	<name>Phase Correction NDA</name>
 	<key>digital_phase_correction_nda_vcvc</key>
 	<category>Digital</category>
-	<import>import digital</import>
 	<import>from gnuradio import digital</import>
 	<make>digital.phase_correction_nda_vcvc($lvec, $power, $loop_bw, $max_freq, $min_freq, $cnst)</make>
 	<callback>digital_constellation.base()</callback>

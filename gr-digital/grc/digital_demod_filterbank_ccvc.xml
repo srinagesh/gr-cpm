@@ -3,7 +3,7 @@
   <name>Demodulation filterbank</name>
   <key>digital_demod_filterbank_ccvc</key>
   <category>Digital</category>
-  <import>import digital</import>
+  <import>from gnuradio import digital</import>
   <import>from gnuradio import gr</import>
   <import>from gnuradio.gr import firdes</import>
   <import>import numpy</import>
